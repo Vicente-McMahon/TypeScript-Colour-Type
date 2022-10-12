@@ -41,15 +41,33 @@ namespace colour {
   type HSL = `hsl(${number},${number}%,${number}%)`;
   type HSLA = `hsla(${number},${number}%,${number}%,${number})`;
   type HWB = `hwb(${number},${number}%,${number}%)`;
-  export type ColourType<T extends string = ""> =
-    | HexColour<T>
-    | RGB
-    | RGBA
-    | HSL
-    | HSLA
-    | HWB
-    | named_colour.NamedColour;
-  export function NewColour<T extends string>(x: ColourType<T>) {
-    return x;
+  export type ColourType<
+    T extends string =
+      | "rgb"
+      | "rgba"
+      | "hsl"
+      | "hsla"
+      | "hwb"
+      | "named"
+      | `#${string}`
+  > = T extends `#${infer Rest}`
+    ? HexColour<Rest>
+    : `${T}` extends "rgb"
+    ? RGB
+    : `${T}` extends "rgba"
+    ? RGBA
+    : `${T}` extends "hsl"
+    ? HSL
+    : `${T}` extends "hsla"
+    ? HSLA
+    : `${T}` extends "hwb"
+    ? HWB
+    : `${T}` extends "named"
+    ? named_colour.NamedColour
+    : never;
+  export function NewColour<
+    T extends "rgb" | "rgba" | "hsl" | "hsla" | "hwb" | "named" | `#${string}`
+  >(value: ColourType<T>) {
+    return value;
   }
 }
